@@ -1,4 +1,1 @@
-requests
-jrdbparser==0.0.7
-fastavro
-google-cloud-storage
+jrdb==0.1.1
