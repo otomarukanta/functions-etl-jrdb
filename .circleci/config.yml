@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: google/cloud-sdk
+    branches:
+      only:
+        - master
+    steps:
+      - run:
+          name: Store Service Account
+          command: echo "${GCP_SERVICE_KEY}" > "${HOME}/gcp-service-key.json"
+      - checkout
+      - run:
+          name: Configuration For GCP
+          command: |
+            gcloud auth activate-service-account --key-file=${HOME}/gcp-service-key.json
+            gcloud --quiet config set project ${GCP_PROJECT_ID}
+      - run:
+          name: Deploy Cloud Functions
+          command: gcloud beta functions deploy fetch-updated-jrdb --runtime python37 --trigger-topic cron-hourly --memory 128M --entry-point main
